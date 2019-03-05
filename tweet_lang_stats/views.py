@@ -29,23 +29,34 @@ def add():
 
         new_user = tweets[0][0]
         user_exists = User.query.filter_by(username=new_user).first()
+
         if user_exists:
-            pass
+            for tw in tweets:
+                tweet_exists = Tweet.query.filter_by(text=tw[1]).first()
+                if not tweet_exists:
+                    lang_exists = Language.query.filter_by(lang=tw[2]).first()
+                    if lang_exists:
+                        tweet = Tweet(text=tw[1], date=tw[3], user_id=user_exists.id, lang_id=lang_exists.id)
+                    else:
+                        new_lang = Language(lang=tw[2])
+                        tweet = Tweet(text=tw[1], date=tw[3], user_id=user_exists.id, language=new_lang)
+                    db.session.add(tweet)
+                else:
+                    continue
         else:
             user = User(username=new_user)
+            for tw in tweets:
+                lang_exists = Language.query.filter_by(lang=tw[2]).first()
+                if lang_exists:
+                    tweet = Tweet(text=tw[1], date=tw[3], user=user, lang_id=lang_exists.id)
+                else:
+                    new_lang = Language(lang=tw[2])
+                    tweet = Tweet(text=tw[1], date=tw[3], user=user, language=new_lang)
+                db.session.add(tweet)
 
-        for tw in tweets:
-            lang_exists = Language.query.filter_by(lang=tw[2]).first()
-            if lang_exists:
-                tweet = Tweet(text=tw[1], date=tw[3], user=user, lang_id=lang_exists.id)
-            else:
-                new_lang = Language(lang=tw[2])
-                tweet = Tweet(text=tw[1], date=tw[3], user=user, language=new_lang)
-
-            db.session.add(tweet)
     return render_template('add.html')
 
 
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found():
     return render_template('404.html'), 404

@@ -1,4 +1,6 @@
 import time
+import re
+from langdetect import detect
 
 # Twitter API for python
 import tweepy
