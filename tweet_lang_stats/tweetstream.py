@@ -13,24 +13,27 @@ from tweet_lang_stats.twitter_pwd import access_token, access_token_secret, cons
 
 class TweetStream:
 
-    def __init__(self):
+    def __init__(self, max_num_twts=50):
         # set_up Twitter API
         auth = OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
         self.api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-    def get_user_tweets(self, screen_name, max_num_twts=50):
-        """ Given an account id,
+        self.max_num_twts = max_num_twts
+
+    def get_user_tweets(self, screen_name):
+        """
+            Given an account id,
             method retrieves a specified maximum number of tweets written or retweeted by account owner.
             It returns them in a list.
             Args:
                 * screen_name: string. Id that identifies the twitter account
-                * max_num_twts: integer. Maximum number of tweets to be retrieved for each account
             Returns:
-                * list_tweets: list including info of all retrieved tweets in JSON format"""
+                * list_tweets: list including info of all retrieved tweets in JSON format
+        """
         list_tweets = []
         timeline = tweepy.Cursor(self.api.user_timeline, id=screen_name,
-                                 count=200, include_rts=False).items(max_num_twts)
+                                 count=200, include_rts=False).items(self.max_num_twts)
         while True:
             try:
                 tw = next(timeline)

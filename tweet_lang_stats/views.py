@@ -1,4 +1,4 @@
-from flask import render_template, request, url_for
+from flask import render_template, request
 
 from tweet_lang_stats import app, db
 
@@ -8,23 +8,23 @@ from .models import Tweet, User, Language
 tweets = []
 
 
-def store_tweets(username):
-    tweets = []
-    streamer = TweetStream()
-    tweets.extend(streamer.get_user_tweets(username))
+def store_tweets(username, max_num_twts=50):
+    streamer = TweetStream(max_num_twts)
+    tweets = streamer.get_user_tweets(username)
     return tweets
 
 
 @app.route('/')
 def index():
-    return render_template('index.html', ppr="Alten", uur="Engie")
+    return render_template('index.html', company="Alten", contractor="Engie")
 
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     if request.method == 'POST':
         username = request.form["username"]
-        tweets = store_tweets(username)
+        num_twts = int(request.form["num_twts"])
+        tweets = store_tweets(username, num_twts)
         app.logger.debug('storing tweets from {}'.format(username))
 
         new_user = tweets[0][0]

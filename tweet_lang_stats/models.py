@@ -1,4 +1,5 @@
 from tweet_lang_stats import db
+from sqlalchemy.dialects.postgresql import JSON
 
 
 class Language(db.Model):

@@ -3,10 +3,10 @@ from sqlalchemy import create_engine
 
 conn = create_engine("postgresql+psycopg2://postgres:Arnau3.1@localhost/TwitterLangs")
 
-username="KRLS"
+username = "KRLS"
 
 query_1 = """   SELECT username, lang, 100*count(lang)/50. as pct
-                FROM TWEETS t join languages l ON t.lang_id = l.id 
+                FROM tweets t JOIN languages l ON t.lang_id = l.id 
                 JOIN users u ON t.user_id = u.id
                 WHERE username = '{}'
                 GROUP BY username, lang

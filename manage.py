@@ -13,7 +13,7 @@ def initdb():
 
 @manager.command
 def dropdb():
-    if prompt_bool("Are you sure you want to lose all the data stored in the database ?"):
+    if prompt_bool(" Are you sure you want to lose all the data stored in the database ?"):
         db.drop_all()
         print("Dropped the database")
 
